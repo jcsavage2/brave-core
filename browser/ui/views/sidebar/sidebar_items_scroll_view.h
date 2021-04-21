@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "brave/browser/ui/sidebar/sidebar_model.h"
+#include "brave/browser/ui/views/sidebar/sidebar_item_controller.h"
 #include "ui/views/animation/bounds_animator.h"
 #include "ui/views/animation/bounds_animator_observer.h"
 #include "ui/views/view.h"
@@ -19,10 +20,12 @@ class ImageButton;
 }  // namespace views
 
 class BraveBrowser;
+class SidebarItemDragContext;
 class SidebarItemsContentsView;
 
 class SidebarItemsScrollView : public views::View,
                                public views::BoundsAnimatorObserver,
+                               public SidebarItemController,
                                public sidebar::SidebarModel::Observer {
  public:
   explicit SidebarItemsScrollView(BraveBrowser* browser);
@@ -45,10 +48,20 @@ class SidebarItemsScrollView : public views::View,
   void OnItemAdded(const sidebar::SidebarItem& item,
                    int index,
                    bool user_gesture) override;
+  void OnItemMoved(const sidebar::SidebarItem& item,
+                   int from,
+                   int to) override;
   void OnItemRemoved(int index) override;
   void OnActiveIndexChanged(int old_index, int new_index) override;
   void OnFaviconUpdatedForItem(const sidebar::SidebarItem& item,
                                const gfx::ImageSkia& image) override;
+
+  // SidebarItemController overrides:
+  void MaybeStartDrag(views::View* view,
+                      const ui::LocatedEvent& event) override;
+  void ContinueDrag(views::View* view,
+                    const ui::LocatedEvent& event) override;
+  void EndDrag(bool drag_completed) override;
 
  private:
   void UpdateArrowViewsTheme();
@@ -66,6 +79,7 @@ class SidebarItemsScrollView : public views::View,
   views::ImageButton* up_arrow_ = nullptr;
   views::ImageButton* down_arrow_ = nullptr;
   SidebarItemsContentsView* contents_view_ = nullptr;
+  std::unique_ptr<SidebarItemDragContext> drag_context_;
   std::unique_ptr<views::BoundsAnimator> scroll_animator_for_new_item_;
   std::unique_ptr<views::BoundsAnimator> scroll_animator_for_smooth_;
   ScopedObserver<sidebar::SidebarModel, sidebar::SidebarModel::Observer>

@@ -11,8 +11,11 @@
 #include "brave/browser/themes/theme_properties.h"
 #include "brave/browser/ui/brave_browser.h"
 #include "brave/browser/ui/sidebar/sidebar_controller.h"
+#include "brave/browser/ui/sidebar/sidebar_service_factory.h"
 #include "brave/browser/ui/views/sidebar/sidebar_button_view.h"
+#include "brave/browser/ui/views/sidebar/sidebar_item_drag_context.h"
 #include "brave/browser/ui/views/sidebar/sidebar_items_contents_view.h"
+#include "brave/components/sidebar/sidebar_service.h"
 #include "cc/paint/paint_flags.h"
 #include "chrome/browser/ui/browser_list.h"
 #include "ui/base/theme_provider.h"
@@ -69,6 +72,7 @@ class SidebarItemsArrowView : public views::ImageButton {
 
 SidebarItemsScrollView::SidebarItemsScrollView(BraveBrowser* browser)
     : browser_(browser),
+      drag_context_(std::make_unique<SidebarItemDragContext>()),
       scroll_animator_for_new_item_(
           std::make_unique<views::BoundsAnimator>(this)),
       scroll_animator_for_smooth_(
@@ -77,7 +81,7 @@ SidebarItemsScrollView::SidebarItemsScrollView(BraveBrowser* browser)
   bounds_animator_observed_.Add(scroll_animator_for_new_item_.get());
   bounds_animator_observed_.Add(scroll_animator_for_smooth_.get());
   contents_view_ =
-      AddChildView(std::make_unique<SidebarItemsContentsView>(browser_));
+      AddChildView(std::make_unique<SidebarItemsContentsView>(browser_, this));
   up_arrow_ = AddChildView(std::make_unique<SidebarItemsArrowView>());
   up_arrow_->SetCallback(
       base::BindRepeating(&SidebarItemsScrollView::OnButtonPressed,
@@ -191,6 +195,11 @@ void SidebarItemsScrollView::OnItemAdded(const sidebar::SidebarItem& item,
   }
 }
 
+void SidebarItemsScrollView::OnItemMoved(const sidebar::SidebarItem& item,
+                                         int from, int to) {
+  contents_view_->OnItemMoved(item, from, to);
+}
+
 void SidebarItemsScrollView::OnItemRemoved(int index) {
   contents_view_->OnItemRemoved(index);
 }
@@ -199,10 +208,53 @@ void SidebarItemsScrollView::OnActiveIndexChanged(int old_index,
                                                   int new_index) {
   contents_view_->OnActiveIndexChanged(old_index, new_index);
 }
+
 void SidebarItemsScrollView::OnFaviconUpdatedForItem(
     const sidebar::SidebarItem& item,
     const gfx::ImageSkia& image) {
   contents_view_->SetImageForItem(item, image);
+}
+
+void SidebarItemsScrollView::MaybeStartDrag(views::View* view,
+                                            const ui::LocatedEvent& event) {
+  drag_context_->MaybeStartDrag(view, event);
+  drag_context_->set_source_index(contents_view_->GetIndexOf(view));
+}
+
+void SidebarItemsScrollView::ContinueDrag(views::View* view,
+                                          const ui::LocatedEvent& event) {
+  drag_context_->ContinueDrag(view, event);
+
+  if (drag_context_->is_dragging()) {
+    gfx::Point position = event.location();
+    views::View::ConvertPointToTarget(view, this, &position);
+
+    // This scroll view is the visible area of items contents view.
+    // If dragging point is in this scroll view, draw indicator.
+    if (HitTestPoint(position)) {
+      const int target_index =
+          contents_view_->DrawDragIndicator(view, event.location());
+      drag_context_->set_drag_indicator_index(target_index);
+    } else {
+      contents_view_->ClearDragIndicator();
+      drag_context_->set_drag_indicator_index(-1);
+    }
+  }
+}
+
+void SidebarItemsScrollView::EndDrag(bool drag_completed) {
+  drag_context_->EndDrag();
+  contents_view_->ClearDragIndicator();
+
+  if (!drag_completed)
+    return;
+
+  if (drag_context_->ShouldMoveItem()) {
+    auto* service =
+        sidebar::SidebarServiceFactory::GetForProfile(browser_->profile());
+    service->MoveItem(drag_context_->source_index(),
+                      drag_context_->GetTargetIndex());
+  }
 }
 
 void SidebarItemsScrollView::UpdateArrowViewsTheme() {

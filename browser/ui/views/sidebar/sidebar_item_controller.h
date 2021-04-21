@@ -6,11 +6,23 @@
 #ifndef BRAVE_BROWSER_UI_VIEWS_SIDEBAR_SIDEBAR_ITEM_CONTROLLER_H_
 #define BRAVE_BROWSER_UI_VIEWS_SIDEBAR_SIDEBAR_ITEM_CONTROLLER_H_
 
+namespace ui {
+class LocatedEvent;
+}  // namespace ui
+
+namespace views {
+class View;
+}  // namespace views
+
+
 class SidebarItemController {
  public:
-  virtual void MaybeStartDrag() = 0;
-  virtual void ContinueDrag() = 0;
-  virtual void EndDrag() = 0;
+  virtual void MaybeStartDrag(views::View* view,
+                              const ui::LocatedEvent& event) = 0;
+  virtual void ContinueDrag(views::View* view,
+                            const ui::LocatedEvent& event) = 0;
+  // Set false when drag is cancelled.
+  virtual void EndDrag(bool drag_completed) = 0;
 
  protected:
   ~SidebarItemController() {}
