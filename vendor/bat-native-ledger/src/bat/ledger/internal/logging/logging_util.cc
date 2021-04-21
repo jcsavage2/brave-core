@@ -10,6 +10,7 @@
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "bat/ledger/internal/logging/logging.h"
+#include "url/gurl.h"
 
 namespace ledger {
 
@@ -99,12 +100,15 @@ void LogUrlResponse(
     const char* func,
     const type::UrlResponse& response,
     const bool long_response) {
+  bool is_error = false;
   std::string result;
   if (!response.error.empty()) {
+    is_error = true;
     result = "Error (" + response.error + ")";
   } else if (response.status_code >= 200 && response.status_code < 300) {
     result = "Success";
   } else {
+    is_error = true;
     result = "Failure";
   }
 
@@ -115,25 +119,20 @@ void LogUrlResponse(
   }
 
   const std::string response_basic = base::StringPrintf(
-      "\n[ RESPONSE - %s ]\n"
-      "> Url: %s\n"
+      "\n[ RESPONSE ]\n"
+      "> URL: %s\n"
       "> Result: %s\n"
-      "> HTTP Code: %d\n"
-      "> Body: %s",
-      func,
-      response.url.c_str(),
-      result.c_str(),
-      response.status_code,
-      response.body.c_str());
+      "> HTTP Code: %d",
+      response.url.c_str(), result.c_str(), response.status_code);
+
+  const std::string response_body =
+      base::StringPrintf("\n[ RESPONSE BODY ]\n%s", response.body.c_str());
 
   const std::string response_headers = base::StringPrintf(
-      "\n[ RESPONSE HEADERS ]\n"
-      "> Url: %s\n"
-      "%s",
-      response.url.c_str(),
-      formatted_headers.c_str());
+      "\n[ RESPONSE HEADERS ]\n%s", formatted_headers.c_str());
 
-  BLOG(long_response ? 7 : 6, response_basic);
+  BLOG(is_error ? 0 : 6, response_basic);
+  BLOG(long_response ? 7 : 6, response_body);
   BLOG(9, response_headers);
 }
 
