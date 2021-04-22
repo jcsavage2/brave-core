@@ -25,6 +25,7 @@
 #include "brave/components/ipfs/ipfs_ports.h"
 #include "brave/components/ipfs/ipfs_service_observer.h"
 #include "brave/components/ipfs/ipfs_utils.h"
+#include "brave/components/ipfs/keys/ipns_keys_manager.h"
 #include "brave/components/ipfs/pref_names.h"
 #include "brave/components/ipfs/service_sandbox_type.h"
 #include "components/grit/brave_components_strings.h"
@@ -67,29 +68,6 @@ class ReentrancyCheck {
 // (kMinimalPeersRetryIntervalMs, kPeersRetryRate*kMinimalPeersRetryIntervalMs)
 const int kMinimalPeersRetryIntervalMs = 350;
 const int kPeersRetryRate = 3;
-
-net::NetworkTrafficAnnotationTag GetNetworkTrafficAnnotationTag() {
-  return net::DefineNetworkTrafficAnnotation("ipfs_service", R"(
-          semantics {
-            sender: "IPFS service"
-            description:
-              "This service is used to communicate with IPFS daemon "
-              "on behalf of the user interacting with the actions in brave://ipfs."
-            trigger:
-              "Triggered by actions in brave://ipfs."
-            data:
-              "Options of the commands."
-            destination: WEBSITE
-          }
-          policy {
-            cookies_allowed: NO
-            setting:
-              "You can enable or disable this feature in brave://settings."
-            policy_exception_justification:
-              "Not implemented."
-          }
-        )");
-}
 
 std::pair<bool, std::string> LoadConfigFileOnFileTaskRunner(
     const base::FilePath& path) {
@@ -253,6 +231,14 @@ void IpfsService::NotifyDaemonLaunchCallbacks(bool result) {
   }
 }
 
+void IpfsService::InitKeysManager() {
+  if (!IsDaemonLaunched())
+    return;
+  if (!ipns_keys_manager_)
+    ipns_keys_manager_ =
+        std::make_unique<IpnsKeysManager>(context_, server_endpoint_);
+}
+
 void IpfsService::OnIpfsLaunched(bool result, int64_t pid) {
   if (result) {
     ipfs_pid_ = pid;
@@ -260,8 +246,11 @@ void IpfsService::OnIpfsLaunched(bool result, int64_t pid) {
     VLOG(0) << "Failed to launch IPFS";
     Shutdown();
   }
-
-  NotifyDaemonLaunchCallbacks(result && pid > 0);
+  bool success = result && pid > 0;
+  if (success) {
+    InitKeysManager();
+  }
+  NotifyDaemonLaunchCallbacks(success);
 
   for (auto& observer : observers_) {
     observer.OnIpfsLaunched(result, pid);
@@ -272,28 +261,9 @@ void IpfsService::Shutdown() {
   if (ipfs_service_.is_bound()) {
     ipfs_service_->Shutdown();
   }
-
+  ipns_keys_manager_.reset();
   ipfs_service_.reset();
   ipfs_pid_ = -1;
-}
-
-std::unique_ptr<network::SimpleURLLoader> IpfsService::CreateURLLoader(
-    const GURL& gurl,
-    const std::string& method) {
-  auto request = std::make_unique<network::ResourceRequest>();
-  request->url = gurl;
-  request->method = method;
-
-  // Remove trailing "/".
-  std::string origin = server_endpoint_.spec();
-  if (base::EndsWith(origin, "/", base::CompareCase::INSENSITIVE_ASCII)) {
-    origin.pop_back();
-  }
-  request->headers.SetHeader(net::HttpRequestHeaders::kOrigin, origin);
-
-  auto url_loader = network::SimpleURLLoader::Create(
-      std::move(request), GetNetworkTrafficAnnotationTag());
-  return url_loader;
 }
 
 void IpfsService::ImportFileToIpfs(const base::FilePath& path,
@@ -422,7 +392,8 @@ void IpfsService::GetConnectedPeers(GetConnectedPeersCallback callback,
     return;
   }
 
-  auto url_loader = CreateURLLoader(server_endpoint_.Resolve(kSwarmPeersPath));
+  auto url_loader = CreateURLLoader(server_endpoint_.Resolve(kSwarmPeersPath),
+      "POST");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
 
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
@@ -487,7 +458,7 @@ void IpfsService::GetAddressesConfig(GetAddressesConfigCallback callback) {
 
   GURL gurl = net::AppendQueryParameter(server_endpoint_.Resolve(kConfigPath),
                                         kArgQueryParam, kAddressesField);
-  auto url_loader = CreateURLLoader(gurl);
+  auto url_loader = CreateURLLoader(gurl, "POST");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
 
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
@@ -659,7 +630,7 @@ void IpfsService::GetRepoStats(GetRepoStatsCallback callback) {
       net::AppendQueryParameter(server_endpoint_.Resolve(ipfs::kRepoStatsPath),
                                 ipfs::kRepoStatsHumanReadableParamName,
                                 ipfs::kRepoStatsHumanReadableParamValue);
-  auto url_loader = CreateURLLoader(gurl);
+  auto url_loader = CreateURLLoader(gurl, "POST");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
 
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
@@ -698,7 +669,7 @@ void IpfsService::GetNodeInfo(GetNodeInfoCallback callback) {
   }
 
   GURL gurl = server_endpoint_.Resolve(ipfs::kNodeInfoPath);
-  auto url_loader = CreateURLLoader(gurl);
+  auto url_loader = CreateURLLoader(gurl, "POST");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
 
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
@@ -738,7 +709,7 @@ void IpfsService::RunGarbageCollection(GarbageCollectionCallback callback) {
 
   GURL gurl = server_endpoint_.Resolve(ipfs::kGarbageCollectionPath);
 
-  auto url_loader = CreateURLLoader(gurl);
+  auto url_loader = CreateURLLoader(gurl, "POST");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
 
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
@@ -774,12 +745,7 @@ void IpfsService::OnGarbageCollection(
 }
 
 void IpfsService::PreWarmShareableLink(const GURL& url) {
-  auto request = std::make_unique<network::ResourceRequest>();
-  request->url = url;
-  request->method = "HEAD";
-  auto url_loader = network::SimpleURLLoader::Create(
-      std::move(request), GetNetworkTrafficAnnotationTag());
-
+  auto url_loader = CreateURLLoader(url, "HEAD");
   auto iter = url_loaders_.insert(url_loaders_.begin(), std::move(url_loader));
   iter->get()->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
       url_loader_factory_.get(),
