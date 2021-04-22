@@ -12,7 +12,7 @@ using std::placeholders::_1;
 
 namespace {
 
-const int kCurrentVersionNumber = 8;
+const int kCurrentVersionNumber = 9;
 
 }  // namespace
 
@@ -112,6 +112,10 @@ void StateMigration::Migrate(ledger::ResultCallback callback) {
     }
     case 8: {
       v8_->Migrate(migrate_callback);
+      return;
+    }
+    case 9: {
+      v9_->Migrate(migrate_callback);
       return;
     }
   }
