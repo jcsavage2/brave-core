@@ -15,6 +15,7 @@ import("//brave/browser/decentralized_dns/sources.gni")
 import("//brave/browser/gemini/sources.gni")
 import("//brave/browser/greaselion/sources.gni")
 import("//brave/browser/importer/sources.gni")
+import("//brave/browser/infobars/sources.gni")
 import("//brave/browser/ipfs/sources.gni")
 import("//brave/browser/new_tab/sources.gni")
 import("//brave/browser/ntp_background_images/sources.gni")
@@ -213,7 +214,6 @@ if (!is_android) {
   brave_chrome_browser_deps += [
     "//brave/app:brave_generated_resources_grit",
     "//brave/browser/importer",
-    "//brave/browser/infobars",
     "//brave/browser/ui/bookmark",
     "//brave/components/weekly_storage",
   ]
@@ -322,6 +322,7 @@ brave_chrome_browser_sources += brave_browser_ui_sources
 brave_chrome_browser_sources += brave_browser_brave_ads_sources
 brave_chrome_browser_sources += brave_browser_ntp_background_images_sources
 brave_chrome_browser_sources += brave_browser_search_sources
+brave_chrome_browser_sources += brave_browser_infobars_sources
 
 brave_chrome_browser_deps += brave_browser_themes_deps
 brave_chrome_browser_deps += brave_browser_wallet_deps
@@ -347,3 +348,4 @@ brave_chrome_browser_deps += brave_browser_ui_deps
 brave_chrome_browser_deps += brave_browser_brave_ads_deps
 brave_chrome_browser_deps += brave_browser_ntp_background_images_deps
 brave_chrome_browser_deps += brave_browser_search_deps
+brave_chrome_browser_deps += brave_browser_infobars_deps

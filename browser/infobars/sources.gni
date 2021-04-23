@@ -1,0 +1,83 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//brave/components/brave_sync/buildflags/buildflags.gni")
+import("//brave/components/brave_wallet/common/buildflags/buildflags.gni")
+import("//brave/components/brave_wayback_machine/buildflags/buildflags.gni")
+import("//brave/components/ipfs/buildflags/buildflags.gni")
+
+brave_browser_infobars_sources = []
+brave_browser_infobars_deps = []
+
+if (!is_android) {
+  brave_browser_infobars_sources += [
+    "//brave/browser/infobars/brave_confirm_p3a_infobar_delegate.cc",
+    "//brave/browser/infobars/brave_confirm_p3a_infobar_delegate.h",
+  ]
+
+  brave_browser_infobars_deps += [
+    "//base",
+    "//brave/app:brave_generated_resources_grit",
+    "//brave/browser/ui",
+    "//brave/components/p3a",
+    "//chrome/app:chromium_strings",
+    "//chrome/browser/profiles:profile",
+    "//chrome/browser/ui",
+    "//components/infobars/core",
+    "//components/prefs",
+    "//components/strings",
+    "//ui/base",
+    "//ui/views",
+    "//url",
+  ]
+
+  if (brave_wallet_enabled) {
+    brave_browser_infobars_sources += [
+      "//brave/browser/infobars/crypto_wallets_infobar_delegate.cc",
+      "//brave/browser/infobars/crypto_wallets_infobar_delegate.h",
+    ]
+
+    brave_browser_infobars_deps += [
+        "//brave/browser/brave_wallet",
+        "//brave/common:pref_names",
+        "//brave/components/brave_wallet/browser",
+        "//brave/components/brave_wallet/common",
+      "//components/user_prefs:user_prefs",
+      "//extensions/common:common_constants",
+    ]
+  }
+
+  if (ipfs_enabled) {
+    brave_browser_infobars_deps += [
+      "//brave/components/ipfs",
+      "//components/user_prefs",
+    ]
+  }
+
+  if (enable_brave_wayback_machine) {
+    brave_browser_infobars_sources += [
+      "//brave/browser/infobars/brave_wayback_machine_delegate_impl.cc",
+      "//brave/browser/infobars/brave_wayback_machine_delegate_impl.h",
+    ]
+
+    brave_browser_infobars_deps += [
+      "//brave/common:switches",
+      "//brave/components/brave_wayback_machine",
+    ]
+  }
+
+  if (enable_brave_sync) {
+    brave_browser_infobars_sources += [
+      "//brave/browser/infobars/sync_v2_migrate_infobar_delegate.cc",
+      "//brave/browser/infobars/sync_v2_migrate_infobar_delegate.h",
+    ]
+
+    brave_browser_infobars_deps += [
+      "//brave/common:common",
+      "//brave/components/brave_sync:features",
+      "//brave/components/brave_sync:prefs",
+    ]
+  }
+}
