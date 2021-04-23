@@ -1,38 +1,10 @@
-<style include="cr-shared-style settings-shared iron-flex">
-  #sync-separator
-  {
-    border-bottom: var(--cr-separator-line);
-  }
-
-  #disabled-by-admin-icon
-  {
-    text-align: center;
-    width: 40px;
-  }
-  #sync-page-loading
-  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  #sync-section
-  {
-    display: block;
-    padding-block-end: 0;
-    padding-block-start: 0;
-    padding-inline-end: var(--cr-section-padding);
-    padding-inline-start: var(--cr-section-indent-padding);
-  }
+<style include="settings-shared iron-flex">
 </style>
-
-
 <!-- Non-disabled content (setup or configure) -->
-<template is="dom-if" if="[[!syncSectionDisabled_]]">
-  <div id="sync-section">
-    <div id="sync-page-loading">
-    </div>
-ggg
-  </div>
-</template>
+<settings-animated-pages id="pages" section="ipfs">
+  <template is="dom-if" route-path="/ipfs/keys">
+      <settings-p2p-keys-manager>
+        
+      </p2p-keys-manager-subpage>
+  </template>
+</settings-animated-pages>
