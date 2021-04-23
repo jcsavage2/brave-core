@@ -1,0 +1,20 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+brave_browser_brave_ads_notifications_sources = [
+  "//brave/browser/brave_ads/notifications/platform_bridge.cc",
+  "//brave/browser/brave_ads/notifications/platform_bridge.h",
+]
+
+brave_browser_brave_ads_notifications_deps = [
+  "//base",
+  "//brave/components/brave_ads/browser",
+  "//brave/ui/brave_ads",
+  "//brave/ui/brave_ads/public/cpp",
+]
+
+if (is_android) {
+  brave_browser_brave_ads_notifications_deps += [ "//brave/browser/brave_ads/android:jni_headers" ]
+}

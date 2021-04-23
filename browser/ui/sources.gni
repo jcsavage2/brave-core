@@ -197,7 +197,6 @@ brave_browser_ui_deps = [
   "//brave/app/theme:brave_unscaled_resources",
   "//brave/app/vector_icons:vector_icons",
   "//brave/browser:sparkle_buildflags",
-  "//brave/browser/brave_ads",
   "//brave/browser/devtools",
   "//brave/browser/gcm_driver",
   "//brave/browser/tor",
@@ -441,7 +440,6 @@ if (brave_rewards_enabled) {
   }
 
   brave_browser_ui_deps += [
-    "//brave/browser/brave_ads",
     "//brave/components/brave_ads/browser",
     "//brave/components/brave_rewards/resources:internals_generated_resources",
     "//brave/components/brave_rewards/resources:page_generated_resources",

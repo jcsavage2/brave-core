@@ -33,7 +33,6 @@ if (is_win) {
 
 brave_browser_profiles_deps = [
   "//base",
-  "//brave/browser/brave_ads",
   "//brave/common:mojo_bindings",
   "//brave/common:pref_names",
   "//brave/common",

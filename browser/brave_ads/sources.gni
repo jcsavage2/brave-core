@@ -1,0 +1,27 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//brave/browser/brave_ads/notifications/sources.gni")
+
+brave_browser_brave_ads_sources = [
+  "//brave/browser/brave_ads/ads_service_factory.cc",
+  "//brave/browser/brave_ads/ads_service_factory.h",
+  "//brave/browser/brave_ads/ads_tab_helper.cc",
+  "//brave/browser/brave_ads/ads_tab_helper.h",
+]
+
+brave_browser_brave_ads_deps = [
+  "//base",
+  "//brave/components/brave_ads/browser",
+  "//brave/components/brave_ads/browser/buildflags",
+  "//components/dom_distiller/content/browser",
+  "//components/keyed_service/content",
+  "//components/sessions",
+  "//content/public/browser",
+  "//ui/base",
+]
+
+brave_browser_brave_ads_sources += brave_browser_brave_ads_notifications_sources
+brave_browser_brave_ads_deps += brave_browser_brave_ads_notifications_deps
