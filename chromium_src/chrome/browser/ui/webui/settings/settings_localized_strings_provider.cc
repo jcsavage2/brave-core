@@ -272,6 +272,8 @@ void BraveAddCommonStrings(content::WebUIDataSource* html_source,
     {"siteSettings", IDS_SETTINGS_SITE_AND_SHIELDS_SETTINGS},
     {"resetRewardsData", IDS_SETTINGS_RESET_REWARDS_DATA},
     {"showFullUrls", IDS_CONTEXT_MENU_SHOW_FULL_URLS},
+    {"ipfsIpnsKeysLinkTitle", IDS_SETTINGS_IPNS_KEYS_EDITOR_LINK},
+    {"ipfsIpnsKeysLinkTitleDesc", IDS_SETTINGS_IPNS_KEYS_EDITOR_LINK_DESC},
   };
   html_source->AddLocalizedStrings(localized_strings);
   html_source->AddString("webRTCLearnMoreURL",

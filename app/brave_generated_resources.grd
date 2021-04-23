@@ -757,6 +757,12 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_SETTINGS_RESOLVE_ENS_DESC" desc="The description for how to handle ENS">
         Method to resolve Ethereum Name Service (ENS)
       </message>
+      <message name="IDS_SETTINGS_IPNS_KEYS_EDITOR_LINK" desc="The title of the link to open keys management block in IPFS settings">
+        Manage your p2p keys
+      </message>
+      <message name="IDS_SETTINGS_IPNS_KEYS_EDITOR_LINK_DESC" desc="The title of the descriptoin for the link to open keys management block in IPFS settings">
+        Sign content by the corresponding private key and publish it to IPNS
+      </message>
       <message name="IDS_SETTINGS_RESOLVE_IPFS_URLS_DESC" desc="The description for how to handle IPFS URIs">
         Method to resolve IPFS resources
       </message>
@@ -814,19 +820,19 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_SETTINGS_IPFS_AUTO_REDIRECT_DNSLINK_RESOURCES_DESC" desc="The description for redirecting IPFS resources for DNSLink">
         Automatically uses DNSLink to navigate to an IPFS version of a website when possible
       </message>
-     <message name="IDS_SETTINGS_HANGOUTS_ENABLED_DESC" desc="The description for Hangouts switch in settings">
+      <message name="IDS_SETTINGS_HANGOUTS_ENABLED_DESC" desc="The description for Hangouts switch in settings">
         Uses Hangouts component to enable screen sharing and other features in the browser.
       </message>
-     <message name="IDS_SETTINGS_MEDIA_ROUTER_ENABLED_DESC" desc="The description for Media Router switch in settings">
+      <message name="IDS_SETTINGS_MEDIA_ROUTER_ENABLED_DESC" desc="The description for Media Router switch in settings">
         Uses Media Router component to enable Chromecast in the browser.
       </message>
-     <message name="IDS_SETTINGS_RESTART_NOTICE" desc="Notifies the user that they need to relaunch Brave">
+      <message name="IDS_SETTINGS_RESTART_NOTICE" desc="Notifies the user that they need to relaunch Brave">
         Your changes will take effect the next time you relaunch Brave.
       </message>
-     <message name="IDS_SETTINGS_RELAUNCH_BUTTON_LABEL" desc="Notifies the user that they need to relaunch Brave">
+      <message name="IDS_SETTINGS_RELAUNCH_BUTTON_LABEL" desc="Notifies the user that they need to relaunch Brave">
         Relaunch Now
       </message>
-     <message name="IDS_SETTINGS_IPFS_COMPANION_ENABLED_DESC" desc="The description for IPFS companion switch in settings">
+      <message name="IDS_SETTINGS_IPFS_COMPANION_ENABLED_DESC" desc="The description for IPFS companion switch in settings">
         Uses the IPFS Companion extension for enhanced IPFS support in Brave, including access to common IPFS tasks from your browser bar.
       </message>
       <message name="IDS_SETTINGS_MANAGE_EXTENSIONS_LABEL" desc="The label of manage extensions link in settings">

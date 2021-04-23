@@ -97,7 +97,11 @@
       >
      </cr-input>
     </div>
-
+    <cr-link-row id="p2pKeysLinkRow" start-icon="settings20:vpn-key"
+    class="hr" label="$i18n{ipfsIpnsKeysLinkTitle}"
+    sub-label="[[ipfsIpnsKeysLinkTitleDesc]]"
+    on-click="onP2pKeysEditorClick_"
+    role-description="$i18n{subpageArrowRoleDescription}"></cr-link-row>
     <template is="dom-if" if="[[showChangeIPFSGatewayDialog_]]" restamp>
         <change-ipfs-gateway-dialog prefs="{{prefs}}" on-close="onChangeIPFSGatewayDialogClosed_">
         </change-ipfs-gateway-dialog>
