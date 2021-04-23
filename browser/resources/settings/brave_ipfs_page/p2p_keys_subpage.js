@@ -20,14 +20,14 @@ import {Polymer, html} from 'chrome://resources/polymer/v3_0/polymer/polymer_bun
 import {I18nBehavior} from 'chrome://resources/js/i18n_behavior.m.js';
 
 import {Route, RouteObserverBehavior, Router} from '../router.m.js';
-import {SyncBrowserProxyImpl, StatusAction} from '../people_page/sync_browser_proxy.m.js';
+
 
 /**
 * @fileoverview
 * 'settings-sync-subpage' is the settings page content
 */
 Polymer({
-  is: 'settings-brave-sync-subpage',
+  is: 'p2p-keys-manager-subpage',
 
   _template: html`{__html_template__}`,
 
@@ -46,35 +46,6 @@ Polymer({
       value: 'configure',
     },
 
-    /**
-    * The current sync preferences, supplied by SyncBrowserProxy.
-    * @type {SyncPrefs|undefined}
-    */
-    syncPrefs: {
-      type: Object,
-    },
-
-    /** @type {SyncStatus} */
-    syncStatus: {
-      type: Object,
-    },
-
-    /** @private */
-    syncDisabledByAdmin_: {
-      type: Boolean,
-      value: false,
-      computed: 'computeSyncDisabledByAdmin_(syncStatus.managed)',
-    },
-
-    /** @private */
-    syncSectionDisabled_: {
-      type: Boolean,
-      value: false,
-      computed: 'computeSyncSectionDisabled_(' +
-          'syncStatus.disabled, ' +
-          'syncStatus.hasError, syncStatus.statusAction, ' +
-          'syncPrefs.trustedVaultKeysRequired)',
-    },
   },
 
   observers: [
@@ -115,13 +86,13 @@ Polymer({
 
   /** @override */
   created: function() {
-    this.browserProxy_ = SyncBrowserProxyImpl.getInstance();
+    // this.browserProxy_ = SyncBrowserProxyImpl.getInstance();
   },
 
   /** @override */
   attached: function() {
     const router = Router.getInstance();
-    if (router.getCurrentRoute() == router.getRoutes().BRAVE_SYNC_SETUP) {
+    if (router.getCurrentRoute() == router.getRoutes().BRAVE_IPFS_KEYS) {
       this.onNavigateToPage_();
     }
   },
@@ -129,7 +100,7 @@ Polymer({
   /** @override */
   detached: function() {
     const router = Router.getInstance();
-    if (router.getRoutes().BRAVE_SYNC_SETUP.contains(router.getCurrentRoute())) {
+    if (router.getRoutes().BRAVE_IPFS_KEYS.contains(router.getCurrentRoute())) {
       this.onNavigateAwayFromPage_();
     }
 
@@ -144,30 +115,8 @@ Polymer({
   },
 
   updatePageStatus_: function () {
-    const isFirstSetup = this.syncStatus && this.syncStatus.firstSetupInProgress
-    this.pageStatus_ = isFirstSetup ? 'setup' : 'configure'
-  },
-
-  /**
-  * @return {boolean}
-  * @private
-  */
-  computeSyncSectionDisabled_: function() {
-    return this.syncStatus !== undefined &&
-        (!!this.syncStatus.disabled ||
-        (!!this.syncStatus.hasError &&
-          this.syncStatus.statusAction !==
-              StatusAction.ENTER_PASSPHRASE &&
-          this.syncStatus.statusAction !==
-              StatusAction.RETRIEVE_TRUSTED_VAULT_KEYS));
-  },
-
-  /**
-  * @return {boolean}
-  * @private
-  */
-  computeSyncDisabledByAdmin_() {
-    return this.syncStatus != undefined && !!this.syncStatus.managed;
+    //const isFirstSetup = this.syncStatus && this.syncStatus.firstSetupInProgress
+    //this.pageStatus_ = isFirstSetup ? 'setup' : 'configure'
   },
 
   /** @protected */
@@ -203,20 +152,8 @@ Polymer({
     }
 
     // Triggers push of prefs to our handler
-    this.browserProxy_.didNavigateToSyncPage();
-
-    this.beforeunloadCallback_ = event => {
-      // When the user tries to leave the sync setup, show the 'Leave site'
-      // dialog.
-      if (this.syncStatus && this.syncStatus.firstSetupInProgress) {
-        event.preventDefault();
-        event.returnValue = '';
-
-        chrome.metricsPrivate.recordUserAction(
-            'Signin_Signin_AbortAdvancedSyncSettings');
-      }
-    };
-    window.addEventListener('beforeunload', this.beforeunloadCallback_);
+    //if (this.browserProxy_)
+      //this.browserProxy_.didNavigateToSyncPage();
 
     this.unloadCallback_ = this.onNavigateAwayFromPage_.bind(this);
     window.addEventListener('unload', this.unloadCallback_);
