@@ -101,7 +101,17 @@
     class="hr" label="$i18n{ipfsIpnsKeysLinkTitle}"
     sub-label="[[ipfsIpnsKeysLinkTitleDesc]]"
     on-click="onP2pKeysEditorClick_"
-    role-description="$i18n{subpageArrowRoleDescription}"></cr-link-row>
+    role-description="$i18n{subpageArrowRoleDescription}">
+
+    <site-list id="allowExceptionsList"
+        category="[[cookiesContentSettingType_]]"
+        category-subtype="[[contentSetting_.ALLOW]]"
+        category-header="$i18n{cookiePageAllowExceptions}"
+        read-only-list="[[exceptionListsReadOnly_]]"
+        search-filter="[[searchTerm]]">
+    </site-list>
+
+  </cr-link-row>
     <template is="dom-if" if="[[showChangeIPFSGatewayDialog_]]" restamp>
         <change-ipfs-gateway-dialog prefs="{{prefs}}" on-close="onChangeIPFSGatewayDialogClosed_">
         </change-ipfs-gateway-dialog>
