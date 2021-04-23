@@ -3,7 +3,10 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
  import './change_ipfs_gateway_dialog.js';
  import {PrefsBehavior} from '../prefs/prefs_behavior.m.js';
-
+ import {Router} from '../router.m.js';
+ import {routes} from '../route.js';
+ import './p2p_keys_subpage.js';
+ 
 (function() {
 'use strict';
 
@@ -52,6 +55,7 @@ Polymer({
     this.onIPFSCompanionEnabledChange_ = this.onIPFSCompanionEnabledChange_.bind(this)
     this.onChangeIpfsStorageMax_ = this.onChangeIpfsStorageMax_.bind(this)
     this.onChangeIpfsMethod_ = this.onChangeIpfsMethod_.bind(this)
+    this.onP2pKeysEditorClick_ = this.onP2pKeysEditorClick_.bind(this)
 
     this.browserProxy_.getIPFSResolveMethodList().then(list => {
       this.ipfsResolveMethod_ = JSON.parse(list)
@@ -76,7 +80,12 @@ Polymer({
     this.$.ipfsStorageMax.value =
       this.getPref('brave.ipfs.storage_max').value;
   },
-
+  
+  onP2pKeysEditorClick_: function() {
+    const router = Router.getInstance();
+    router.navigateTo(router.getRoutes().BRAVE_IPFS_KEYS);
+  },
+  
   onChangeIpfsMethod_: function() {
     const resolve_method = this.getPref('brave.ipfs.resolve_method').value;
     // Check if IPFS method is LOCAL_NODE
