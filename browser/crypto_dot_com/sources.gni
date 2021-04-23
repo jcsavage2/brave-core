@@ -16,7 +16,6 @@ if (crypto_dot_com_enabled) {
 
   brave_browser_crypto_dot_com_deps += [
     "//base",
-    "//brave/browser/profiles",
     "//brave/components/crypto_dot_com/browser",
     "//brave/components/crypto_dot_com/common",
     "//chrome/browser/profiles:profile",

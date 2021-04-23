@@ -11,6 +11,7 @@ source_set("tor") {
     "//brave/browser/decentralized_dns/test:unit_tests",
     "//brave/browser/ipfs/test:*",
     "//brave/browser/profiles",
+    "//brave/browser/profiles:util",
     "//brave/browser/ui",
     "//brave/test:*",
     "//chrome/browser",

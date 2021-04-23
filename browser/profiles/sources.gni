@@ -1,0 +1,76 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//brave/components/decentralized_dns/buildflags/buildflags.gni")
+import("//brave/components/tor/buildflags/buildflags.gni")
+import("//components/gcm_driver/config.gni")
+
+brave_browser_profiles_sources = [
+  "brave_bookmark_model_loaded_observer.cc",
+  "brave_bookmark_model_loaded_observer.h",
+  "brave_profile_avatar_downloader.cc",
+  "brave_profile_avatar_downloader.h",
+  "brave_profile_impl.cc",
+  "brave_profile_impl.h",
+  "brave_profile_manager.cc",
+  "brave_profile_manager.h",
+  "brave_renderer_updater.cc",
+  "brave_renderer_updater.h",
+  "brave_renderer_updater_factory.cc",
+  "brave_renderer_updater_factory.h",
+  "profile_util.cc",
+  "profile_util.h",
+]
+
+if (is_win) {
+  brave_browser_profiles_sources += [
+    "brave_profile_shortcut_manager_win.cc",
+    "brave_profile_shortcut_manager_win.h",
+  ]
+}
+
+brave_browser_profiles_deps = [
+  "//base",
+  "//brave/browser/brave_ads",
+  "//brave/common:mojo_bindings",
+  "//brave/common:pref_names",
+  "//brave/common",
+  "//brave/components/brave_ads/browser",
+  "//brave/components/brave_rewards/browser",
+  "//brave/components/brave_sync:prefs",
+  "//brave/components/brave_wallet/browser",
+  "//brave/components/brave_wallet/common/buildflags",
+  "//brave/components/content_settings/core/browser",
+  "//brave/components/decentralized_dns/buildflags",
+  "//brave/components/ipfs/buildflags",
+  "//brave/components/ntp_background_images/common",
+  "//brave/components/search_engines",
+  "//brave/components/tor/buildflags",
+  "//brave/content:browser",
+  "//chrome/browser:browser_process",
+  "//chrome/common",
+  "//components/bookmarks/browser",
+  "//components/bookmarks/common",
+  "//components/gcm_driver:gcm_buildflags",
+  "//components/keyed_service/content",
+  "//components/keyed_service/core",
+  "//components/prefs",
+  "//components/search_engines",
+  "//components/signin/public/identity_manager",
+  "//content/public/browser",
+  "//mojo/public/cpp/bindings",
+  "//ui/base",
+]
+
+if (use_gcm_from_platform) {
+  brave_browser_profiles_deps += [ "//brave/browser/gcm_driver" ]
+}
+
+if (enable_tor) {
+  brave_browser_profiles_deps += [
+    "//brave/browser/tor",
+    "//brave/components/tor",
+  ]
+}

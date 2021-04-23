@@ -21,7 +21,6 @@ brave_browser_search_engines_sources = [
 ]
 
 brave_browser_search_engines_deps = [
-  "//brave/browser/profiles:util",
   "//brave/common:pref_names",
   "//chrome/browser/profiles:profile",
   "//components/keyed_service/content",

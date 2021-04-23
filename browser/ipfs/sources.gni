@@ -23,7 +23,6 @@ if (ipfs_enabled) {
 
   brave_browser_ipfs_deps += [
     "//base",
-    "//brave/browser/profiles:util",
     "//brave/common",
     "//brave/components/ipfs",
     "//brave/components/resources:strings_grit",

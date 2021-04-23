@@ -21,8 +21,6 @@ if (brave_rewards_enabled) {
 
   brave_browser_brave_rewards_deps += [
     "//base",
-    "//brave/browser/profiles",
-    "//brave/browser/profiles:util",
     "//brave/components/brave_rewards/browser",
     "//brave/components/brave_rewards/common",
     "//brave/components/ipfs/buildflags",
