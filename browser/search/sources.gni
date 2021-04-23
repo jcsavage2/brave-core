@@ -1,0 +1,22 @@
+# Copyright (c) 2021 The Brave Authors. All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+brave_browser_search_sources = []
+brave_browser_search_deps = []
+
+if (!is_android) {
+  brave_browser_search_sources += [
+    "//brave/browser/search/ntp_utils.cc",
+    "//brave/browser/search/ntp_utils.h",
+  ]
+
+  brave_browser_search_deps += [
+    "//brave/browser/profiles:profiles",
+    "//brave/common:pref_names",
+    "//chrome/common",
+    "//components/pref_registry",
+    "//components/prefs",
+  ]
+}

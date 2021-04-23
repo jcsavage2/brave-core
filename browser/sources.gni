@@ -21,6 +21,7 @@ import("//brave/browser/ntp_background_images/sources.gni")
 import("//brave/browser/permissions/sources.gni")
 import("//brave/browser/profiles/sources.gni")
 import("//brave/browser/search_engines/sources.gni")
+import("//brave/browser/search/sources.gni")
 import("//brave/browser/signin/sources.gni")
 import("//brave/browser/speedreader/sources.gni")
 import("//brave/browser/themes/sources.gni")
@@ -95,7 +96,6 @@ brave_chrome_browser_deps = [
   "//brave/browser/gcm_driver",
   "//brave/browser/net",
   "//brave/browser/renderer_context_menu",
-  "//brave/browser/search",
   "//brave/browser/sync",
   "//brave/browser/themes",
   "//brave/browser/translate/buildflags",
@@ -321,6 +321,7 @@ brave_chrome_browser_sources += brave_browser_profiles_sources
 brave_chrome_browser_sources += brave_browser_ui_sources
 brave_chrome_browser_sources += brave_browser_brave_ads_sources
 brave_chrome_browser_sources += brave_browser_ntp_background_images_sources
+brave_chrome_browser_sources += brave_browser_search_sources
 
 brave_chrome_browser_deps += brave_browser_themes_deps
 brave_chrome_browser_deps += brave_browser_wallet_deps
@@ -345,3 +346,4 @@ brave_chrome_browser_deps += brave_browser_profiles_deps
 brave_chrome_browser_deps += brave_browser_ui_deps
 brave_chrome_browser_deps += brave_browser_brave_ads_deps
 brave_chrome_browser_deps += brave_browser_ntp_background_images_deps
+brave_chrome_browser_deps += brave_browser_search_deps
