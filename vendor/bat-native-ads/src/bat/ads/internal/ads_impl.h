@@ -50,6 +50,7 @@ class AntiTargeting;
 class EpsilonGreedyBandit;
 class PurchaseIntent;
 class TextClassification;
+class VerifiableConversion;
 }  // namespace resource
 
 namespace database {
@@ -202,6 +203,7 @@ class AdsImpl : public Ads,
   std::unique_ptr<ad_targeting::processor::PurchaseIntent>
       purchase_intent_processor_;
   std::unique_ptr<resource::AntiTargeting> anti_targeting_resource_;
+  std::unique_ptr<resource::VerifiableConversion> verifiable_conversion_resource_;
   std::unique_ptr<ad_targeting::geographic::SubdivisionTargeting>
       subdivision_targeting_;
   std::unique_ptr<AdTargeting> ad_targeting_;

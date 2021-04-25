@@ -1,0 +1,19 @@
+{
+  "locale": "us",
+  "version": 1,
+  "timestamp": "2021-04-25 00:00:00",
+  "conversion_patterns": {
+    "https://*.foo.com/*/checkout/": {
+      "type": "html",
+      "script": "document.querySelector('#orderId').textContent"
+    },
+    "https://bar.com/confirm/*": {
+      "type": "html",
+      "script": "document.head.querySelector('.id').getAttribute('value')"
+    },
+    "https://*.checkout.baz.com/*": {
+      "type": "query",
+      "script": "query=*"
+    }
+  }
+}

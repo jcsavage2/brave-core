@@ -83,6 +83,22 @@ bool DoesConfirmationTypeMatchConversionType(
   }
 }
 
+// std::string ExtractVerifiableConversionId(const std::string& html, const std::string& url_pattern, const ... resource) {
+//   conversion_id_pattern = "<meta.*name=\"ad-conversion-id\".*content=\"(.*)\".*>"
+//   conversion_id_container = html
+
+//   // override greedy maybe
+//   item = resource->list[url_pattern]
+//   if item != end()
+//     if list.type == url:
+//       conversion_id_container = url
+
+//     if !item.pattern.empty():
+//       conversion_id_pattern = item.pattern
+
+//   re2::StringPiece text_string_piece(conversion_id_container);
+//   RE2 r(conversion_id_pattern);
+
 std::string ExtractVerifiableConversionIdFromHtml(const std::string& html) {
   re2::StringPiece text_string_piece(html);
   RE2 r("<meta.*name=\"ad-conversion-id\".*content=\"(.*)\".*>");
@@ -155,6 +171,9 @@ void Conversions::RemoveObserver(ConversionsObserver* observer) {
   observers_.RemoveObserver(observer);
 }
 
+// void Conversions::MaybeConvert(const std::vector<std::string>& redirect_chain,
+//                                const std::string& html,
+//                                const ... resource) {
 void Conversions::MaybeConvert(const std::vector<std::string>& redirect_chain,
                                const std::string& html) {
   if (!ShouldAllow()) {
@@ -169,6 +188,7 @@ void Conversions::MaybeConvert(const std::vector<std::string>& redirect_chain,
   }
 
   CheckRedirectChain(redirect_chain, html);
+  // CheckRedirectChain(redirect_chain, html, resource);
 }
 
 void Conversions::StartTimerIfReady() {
@@ -200,6 +220,10 @@ bool Conversions::ShouldAllow() const {
       prefs::kShouldAllowConversionTracking);
 }
 
+// void Conversions::CheckRedirectChain(
+//     const std::vector<std::string>& redirect_chain,
+//     const std::string& html,
+//     const ... resource) {
 void Conversions::CheckRedirectChain(
     const std::vector<std::string>& redirect_chain,
     const std::string& html) {
@@ -255,6 +279,7 @@ void Conversions::CheckRedirectChain(
 
           VerifiableConversionInfo verifiable_conversion;
           verifiable_conversion.id =
+              // ExtractVerifiableConversion(html, conversion.url_pattern, resource);
               ExtractVerifiableConversionIdFromHtml(html);
           verifiable_conversion.public_key = conversion.advertiser_public_key;
 

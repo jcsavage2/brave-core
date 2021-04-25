@@ -128,6 +128,7 @@ source_set("brave_ads_unit_tests") {
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/resources/behavioral/bandits/epsilon_greedy_bandit_resource_unittest.cc",
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/resources/behavioral/purchase_intent/purchase_intent_resource_unittest.cc",
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/resources/contextual/text_classification/text_classification_resource_unittest.cc",
+      "//brave/vendor/bat-native-ads/src/bat/ads/internal/resources/conversions/verifiable_conversion_resource_unittest.cc",
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/resources/frequency_capping/anti_targeting_resource_unittest.cc",
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/security/conversions/conversions_util_unittest.cc",
       "//brave/vendor/bat-native-ads/src/bat/ads/internal/security/crypto_util_unittest.cc",
